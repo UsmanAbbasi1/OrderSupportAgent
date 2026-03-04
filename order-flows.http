@@ -1,0 +1,70 @@
+@baseUrl = http://127.0.0.1:8000
+
+### Health check
+GET {{baseUrl}}/health
+Accept: application/json
+
+### Order flow: wrong items delivered (should verify with replacement-style resolution)
+POST {{baseUrl}}/cases/langgraph
+Content-Type: application/json
+
+{
+  "issue": "My order was delivered with wrong items. I ordered 2 blue shirts but got 1 red shirt and 1 hat.",
+  "tenant_id": "shop-acme",
+  "app_id": "order-service",
+  "time_range": "last_7d"
+}
+
+### Order flow: missing item from order (order intent path)
+POST {{baseUrl}}/cases/langgraph
+Content-Type: application/json
+
+{
+  "issue": "One item is missing from my order. I ordered 3 notebooks and only received 2.",
+  "tenant_id": "shop-acme",
+  "app_id": "order-service",
+  "time_range": "last_7d"
+}
+
+### Order flow: ambiguous package issue (should ask clarification)
+POST {{baseUrl}}/cases/langgraph
+Content-Type: application/json
+
+{
+  "issue": "I received something weird in my package.",
+  "tenant_id": "shop-acme",
+  "app_id": "order-service",
+  "time_range": "last_7d"
+}
+
+### Order flow: SKU mismatch phrasing (order classification signal check)
+POST {{baseUrl}}/cases/langgraph
+Content-Type: application/json
+
+{
+  "issue": "Order SKU mismatch: expected blue-shirt-XL, got hat-red-M.",
+  "tenant_id": "shop-acme",
+  "app_id": "order-service",
+  "time_range": "last_24h"
+}
+
+### Contrast case: login failure (non-order path)
+POST {{baseUrl}}/cases/langgraph
+Content-Type: application/json
+
+{
+  "issue": "Users cannot log in during traffic spikes.",
+  "tenant_id": "tenant-acme",
+  "app_id": "billing-portal",
+  "time_range": "last_24h"
+}
+
+### Validation case: missing required field (expect 422)
+POST {{baseUrl}}/cases/langgraph
+Content-Type: application/json
+
+{
+  "issue": "My order has wrong items.",
+  "tenant_id": "shop-acme",
+  "time_range": "last_24h"
+}
