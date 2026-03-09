@@ -229,9 +229,27 @@ def needs_clarification(context: CaseContext, threshold: float = 0.75) -> bool:
 
 def build_clarification_questions(context: CaseContext) -> list[str]:
     issue_lower = context.request.issue.lower()
-    if _is_order_issue(context) or "package" in issue_lower or "delivery" in issue_lower:
+    order_hints = (
+        "order",
+        "package",
+        "delivery",
+        "item",
+        "items",
+        "sku",
+        "received",
+        "wrong",
+        "incorrect",
+        "not correct",
+        "missing",
+    )
+    if _is_order_issue(context) or any(token in issue_lower for token in order_hints):
         questions: list[str] = ["What is your order ID?"]
-        if "wrong" in issue_lower or "item" in issue_lower:
+        if (
+            "wrong" in issue_lower
+            or "item" in issue_lower
+            or "incorrect" in issue_lower
+            or "not correct" in issue_lower
+        ):
             questions.append("Which item did you expect, and which item did you receive?")
         questions.append("Was any item missing, wrong, or damaged?")
         return questions
