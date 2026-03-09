@@ -128,3 +128,11 @@ Use this endpoint to demonstrate graph-based orchestration in client demos.
 9. Simulate a fix and re-run verification
 10. If verified: respond with validated resolution + trace
 11. If not verified: mark as escalated to a human Tier-2 agent
+
+
+COMMANDS
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip install -r requirements.txt
